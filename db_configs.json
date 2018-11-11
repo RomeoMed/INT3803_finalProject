@@ -1,0 +1,8 @@
+{
+  "host": "localhost",
+  "port": "3306",
+  "db": "final_proj_int3803",
+  "user": "se_user",
+  "password": "se_user",
+  "connect_timeout": 5
+}
