@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index Page</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../static/css/site-style.css"/>
+    <link rel="stylesheet" href="../static/css/jquery.datatables.min.css"/>
+    <script style="text/javascript" src="../static/scripts/jquery-3.3.1.js"></script>
+    <script style="text/javascript" src="../static/scripts/bootstrap.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="head row">
+            <p>A header of some sort</p>
+        </header>
+        <div class="row">
+            <nav>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#home">Ratings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#dashboard" id="dash">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#menu2">Menu 2</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <main>
+            <div class="row content">
+                <div class="tab-content">
+                    <div class="tab-pane container active" id="home">
+                        <div class="row">
+                            <form id="location_form">
+                                <div class="location_input">
+                                    <label for="location_state">Select a location state:  </label>
+                                    <select name="location" id="state_selector">
+
+                                    </select>
+                                </div>
+                                <div class="location_input">
+                                    <label class="dyno_address" for="location_address"> Select the address: </label>
+                                    <select class="dyno_address" name="location_address" id="address_selector">
+
+                                    </select>
+                                    <label class= "dyno_address" for="travel_type" id="travel_label">Select Travel Style: </label>
+                                    <select class="dyno_address" name="travel_style" id="travel_style">
+                                        <option value="Families">Families</option>
+                                        <option value="Couples">Couples</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Friends">Friends</option>
+                                        <option value="No Filing In">None</option>
+                                        <option value="Solo">Solo</option>
+                                    </select>
+                                </div>
+                                <div class="submit_btn">
+                                    <input type="button" class="button" id="submit" value="submit"/>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <div class="data_container">
+                                <table id="value_ratings">
+                                    <caption>Rating Percentage by Travel Style</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>AVG Rating</th>
+                                            <th>Total Reviews</th>
+                                            <th>Value</th>
+                                            <th>Location</th>
+                                            <th>Sleep</th>
+                                            <th>Room</th>
+                                            <th>Cleanliness</th>
+                                            <th>Service</th>
+                                            <th>Check-in</th>
+                                            <th>Business</th>
+                                            <th>total_overall</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane container" id="dashboard">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-sm-6">
+                                    <h4>Hotel Data Analysis</h4>
+                                    <hr/>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="col-sm-8 dashSelect">
+                                    <label for="dashboard-locations">Location: </label>
+                                    <select id="dashboard-locations" name="dashboard-locations">
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 dashBtn">
+                                    <input type="button" id="dashboard_button" value="Go">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 dashboard-container">
+                                <div class="col-sm-2">
+                                    <div id="stays" class="thumbnail">
+                                        <h6>Total Stays</h6>
+                                        <p>485</p>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane container fade" id="menu2">...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script style="text/javascript" src="../static/scripts/main.js"></script>
+    <script style="text/javascript" src="../static/scripts/jquery.dataTables.min.js"></script>
+</body>
+</html>
