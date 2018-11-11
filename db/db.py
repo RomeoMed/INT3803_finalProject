@@ -5,9 +5,12 @@ from retrying import retry
 from typing import Optional
 import MySQLdb
 import json
+import logging
 
 
+_logger = logging.getLogger("FinalProjectApp")
 def retry_on_dberror(exception: Exception) -> bool:
+    _logger.info("********retry_on_dberror")
     """ Used in the retrying decorator to retry queries if there is a database error.
     Args:
         exception (Exception): the exception to test.
@@ -20,7 +23,7 @@ def retry_on_dberror(exception: Exception) -> bool:
 
 class _rollback(object):
     """ Mini class to ensure failed transactions are rolled back prior to a retry """
-
+    _logger.info("ERROR-------->rolling back database")
     def __init__(self, conn):
         self.conn = conn
 
@@ -43,6 +46,7 @@ class Database(object):
     def connect(self) -> None:
         """ Establishes a global a database connection object.
         """
+        _logger.info("Connecting to Database")
         with open('db_configs.json') as shh:
             secret = json.load(shh)
 

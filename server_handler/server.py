@@ -1,19 +1,23 @@
 import json
+import logging
 from db import Database
 
 
 class ServerHandler:
     def __init__(self):
         self._db = Database()
+        self._logger = logging.getLogger('FinalProjectApp')
 
     def get_states(self):
         with self._db as _db:
             query = """SELECT DISTINCT state FROM hotel_location
                        ORDER BY state ASC"""
             result = _db.select(query)
+        self._logger.info("------->get_states: result=%s" % result)
         return result
 
     def get_locations(self, state: str):
+        self._logger.info("------>get_locations for %s" % state)
         query = """SELECT location_id,
                           CONCAT(address1, ' ', 
                             address2, ' ',
@@ -30,6 +34,7 @@ class ServerHandler:
             return result
 
     def get_all_locations(self):
+        self._logger.info("--------> get_all_locations")
         query = """SELECT location_id,
                           CONCAT(address1, ' ', 
                                     address2, ' ',
@@ -47,6 +52,7 @@ class ServerHandler:
             return result
 
     def get_location_data(self, id: int, style: str):
+        self._logger.info("------->get_location_data id: %s, style: %s" % (str(id), style))
         query = """SELECT 
                         CONCAT(l.address1, ', ',
                                 l.address2),
@@ -73,6 +79,8 @@ class ServerHandler:
             result = _db.select_with_params(query, [style, id])
 
         if result:
+            self._logger.info("------> result: %s" % result)
             return result
         else:
+            self._logger.info("------> result: None Fount")
             return 'None Found'
