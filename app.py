@@ -25,14 +25,14 @@ request_handler = ServerHandler()
 
 @app.route("/")
 def index():
-    _logger.info('Accessing Home Page.')
+    _logger.info('Request for Home Page.')
     # returns the main registration page.
     return render_template('index.html')
 
 
 @app.route('/get_states', methods=['GET'])
 def get_states():
-    _logger.info('GET has been received, processing data.')
+    _logger.info('/get_states request --processing data.')
     try:
         states = request_handler.get_states()
         if states:
@@ -45,6 +45,7 @@ def get_states():
 
 @app.route('/get_locations_by_state', methods=['GET'])
 def get_locations():
+    _logger.info("/get_locations_by_state --processing")
     state = request.args.get('state')
     state_obj = {}
     try:
@@ -54,11 +55,12 @@ def get_locations():
                 state_obj[res[0]] = res[1]
             return jsonify(state_obj)
     except Exception as e:
-        _logger.info('fail')
+        _logger.info('ERROR---------> %s' % e)
 
 
 @app.route('/get_locations_data', methods=['GET'])
 def get_locations_data():
+    _logger.info('/get_locations_data --processing request')
     id = request.args.get('location_id')
     style = request.args.get('travel_style')
     response = []
@@ -91,12 +93,13 @@ def get_locations_data():
         else:
             return jsonify({'error' : 'No trips for selected location & travel_type'})
     except Exception as e:
-        _logger.info('fail')
+        _logger.info('ERROR-------> %s' % e)
 
 @app.route('/get_dashboard_select', methods=['GET'])
 # Handler for the admin/reports page. Gets the data from the DB, and
 # returns it to a table in the html file.
 def getDashboardSelect():
+    _logger.info('/getDashboardSelect --processing request')
     state_obj = {}
     try:
         result = request_handler.get_all_locations()
@@ -105,7 +108,7 @@ def getDashboardSelect():
                 state_obj[res[0]] = res[1]
             return jsonify(state_obj)
     except Exception as e:
-        _logger.info('fail')
+        _logger.info('ERROR--------> %s' % e)
 
 
 if __name__ == '__main__':
