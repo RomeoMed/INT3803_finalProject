@@ -1,7 +1,7 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler
-from store_data import DataHandler
+from initial_store_data.store_data import DataHandler
 
 logPath = r'log\main.log'
 # Set the name of the object we are logging for

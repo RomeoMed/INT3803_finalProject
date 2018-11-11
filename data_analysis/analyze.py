@@ -1,6 +1,6 @@
 import logging
 from db import Database
-from analysis import Analyzer
+from data_analysis.analysis import Analyzer
 from logging.handlers import RotatingFileHandler
 
 def main():
