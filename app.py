@@ -7,7 +7,7 @@ from flask import Flask, render_template, flash, request, jsonify
 from server_handler.server import ServerHandler
 
 
-logPath = r'log\app.log'
+logPath = r'log\log.log'
 # Set the name of the object we are logging for
 _logger = logging.getLogger("FinalProjectApp")
 _logger.setLevel(logging.DEBUG)
