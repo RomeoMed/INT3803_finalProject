@@ -13,7 +13,6 @@ class ServerHandler:
             query = """SELECT DISTINCT state FROM hotel_location
                        ORDER BY state ASC"""
             result = _db.select(query)
-        self._logger.info("------->get_states: result=%s" % result)
         return result
 
     def get_locations(self, state: str):
@@ -84,3 +83,44 @@ class ServerHandler:
         else:
             self._logger.info("------> result: None Fount")
             return 'None Found'
+
+    def get_panel_data(self, id_num: any):
+        return_obj = {}
+
+        self._logger.info("-------->get_panel_data")
+        query = """SELECT COUNT(*) AS total_reviews
+                    FROM trip_info
+                    WHERE location_id = %s"""
+        with self._db as _db:
+            result = _db.select_with_params(query, [id_num])
+        return_obj['total_reviews'] = result[0][0] or "Error"
+
+        query = """SELECT COUNT(*), overall_rating FROM trip_review tr
+                    JOIN trip_info 
+                        ON trip_info.trip_id = tr.trip_id
+                    WHERE location_id = %s
+                    GROUP BY overall_rating;"""
+
+        with self._db as _db:
+            result = _db.select_with_params(query, [id_num])
+            if result:
+                pos_total, neg_total = self._get_metrics(result)
+
+            return_obj['pos_total'] = pos_total
+            return_obj['neg_total'] = neg_total
+
+            return return_obj
+
+    def _get_metrics(self, data: any):
+        total_pos = 0
+        total_neg = 0
+
+        for item in data:
+            count = item[0]
+            rating = item[1]
+
+            if rating <= 3:
+                total_neg += count
+            else:
+                total_pos += count
+        return total_pos, total_neg

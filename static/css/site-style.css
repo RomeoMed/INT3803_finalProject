@@ -122,3 +122,8 @@ main{
 .dashboard-container{
     margin-top: 2em;
 }
+
+.metrics{
+    display: inline-block;
+    margin: .1em;
+}

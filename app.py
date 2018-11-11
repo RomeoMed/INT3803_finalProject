@@ -111,6 +111,21 @@ def getDashboardSelect():
         _logger.info('ERROR--------> %s' % e)
 
 
+@app.route('/get_panel_data', methods=['GET'])
+# Handler for the admin/reports page. Gets the data from the DB, and
+# returns it to a table in the html file.
+def get_panel_data():
+    location_id = request.args.get('id')
+    _logger.info('/get_panel_data for: %s' % location_id)
+    res_obj = {}
+    try:
+        result = request_handler.get_panel_data(location_id)
+        if result:
+            return jsonify(result)
+    except Exception as e:
+        _logger.info('ERROR--------> %s' % e)
+
+
 if __name__ == '__main__':
     _logger.info('Server is Listening.....')
     app.run(debug=True)
