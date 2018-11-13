@@ -12,6 +12,7 @@ main {
 }
 
 #location_form{
+    margin-top: 1em;
     width: 100%;
 }
 
@@ -73,12 +74,13 @@ main{
 }
 
 .data_container {
-    width: 90%;
     margin-left: auto;
     margin-right: auto;
-    height: 700px;
+    padding: 1em;
     background-color: #DCDCDC;
     margin-top: 2em;
+    width: 100%;
+    min-height: 650px;
 }
 
 #travel_label {
@@ -89,15 +91,9 @@ main{
     margin-top: 2em;
 }
 
-.data_container{
-    width: auto;
-    overflow: scroll;
-}
 
 #value_ratings_wrapper{
-    margin-top: 2em;
-    margin-left: .5em;
-    margin-right: .5em;
+
 }
 
 #value_ratings th, #value_ratings td{
@@ -121,9 +117,20 @@ main{
 
 .dashboard-container{
     margin-top: 2em;
+    text-align: center;
 }
 
 .metrics{
     display: inline-block;
     margin: .1em;
+}
+
+#ratings_chart {
+    width: 100%;
+    height: auto;
+}
+
+.bar_graph {
+    margin-top: 2em;
+    background-color: #f2f2f2 !important;
 }

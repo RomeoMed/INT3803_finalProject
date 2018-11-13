@@ -61,35 +61,29 @@ def get_locations():
 @app.route('/get_locations_data', methods=['GET'])
 def get_locations_data():
     _logger.info('/get_locations_data --processing request')
-    id = request.args.get('location_id')
-    style = request.args.get('travel_style')
+    state = request.args.get('state')
     response = []
     try:
-        result = request_handler.get_location_data(id, style)
+        result = request_handler.get_location_data(state)
         if 'None Found' not in result:
-            converter = helpers.ConvertDecimalToString()
             for res in result:
-                overall = (res[12] / (res[2] * 5)) * 100
-                round(overall, 2)
-                tmp_obj = {
-                    'address': res[0],
-                    'csz': res[1],
-                    'total_reviews': res[2],
-                    'value': '{0}%'.format(converter.process(res[3])),
-                    'location': '{0}%'.format(converter.process(res[4])),
-                    'sleep': '{0}%'.format(converter.process(res[5])),
-                    'room': '{0}%'.format(converter.process(res[6])),
-                    'clean': '{0}%'.format(converter.process(res[7])),
-                    'service': '{0}%'.format(converter.process(res[8])),
-                    'checkin': '{0}%'.format(converter.process(res[9])),
-                    'business': '{0}%'.format(converter.process(res[10])),
-                    'overall': res[11],
-                    'total_overall': '{0:.2f}%'.format(round(overall, 2))
-                }
-
-                response.append(tmp_obj)
-
-            return jsonify(response)
+                total_score = 0
+                max_score = 0
+                possible_score = res['possible_score']
+                for k, v in res.items():
+                    if k == 'address':
+                        res[k] = v + ' ' + res['csz']
+                    if k != 'address' and k != 'csz' and k != 'total_reviews' and k != 'possible_score':
+                        total_score += v
+                        max_score += possible_score
+                        res[k] = "{0}%".format(round((v / possible_score), 2) * 100)
+                if total_score and possible_score:
+                    overall = round((total_score/max_score), 2) * 100
+                    overall = '%.1f' % overall
+                    res['overall'] = "{0}%".format(overall)
+                else:
+                    res['overall'] = '--%'
+            return jsonify(result)
         else:
             return jsonify({'error' : 'No trips for selected location & travel_type'})
     except Exception as e:
