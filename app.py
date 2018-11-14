@@ -76,7 +76,8 @@ def get_locations_data():
                     if k != 'address' and k != 'csz' and k != 'total_reviews' and k != 'possible_score':
                         total_score += v
                         max_score += possible_score
-                        res[k] = "{0}%".format(round((v / possible_score), 2) * 100)
+                        tmp = round((v / possible_score), 2) * 100
+                        res[k] = '%.1f' % tmp + '%'
                 if total_score and possible_score:
                     overall = round((total_score/max_score), 2) * 100
                     overall = '%.1f' % overall
@@ -111,13 +112,37 @@ def getDashboardSelect():
 def get_panel_data():
     location_id = request.args.get('id')
     _logger.info('/get_panel_data for: %s' % location_id)
-    res_obj = {}
     try:
         result = request_handler.get_panel_data(location_id)
         if result:
             return jsonify(result)
     except Exception as e:
         _logger.info('ERROR--------> %s' % e)
+
+
+@app.route('/get_travel_style_analysis', methods=['GET'])
+def get_travel_style_analysis():
+    location_id = request.args.get('id')
+    _logger.info('/get_travel_style_analysis --processing request')
+    try:
+        result = request_handler.get_travel_style_analysis(location_id)
+        if result:
+            return jsonify(result)
+    except Exception as e:
+        _logger.info('ERROR--------> %s' % e)
+
+
+@app.route('/get_doughnut_chart', methods=['GET'])
+def get_doughnut_char():
+    location_id = request.args.get('id')
+    _logger.info('/get_doughnut_chart --processing request')
+    try:
+        result = request_handler.get_doughnut(location_id)
+        if result:
+            return jsonify(result)
+    except Exception as e:
+        _logger.info('ERROR--------> %s' % e)
+
 
 
 if __name__ == '__main__':

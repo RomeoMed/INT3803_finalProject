@@ -1,28 +1,18 @@
 $(document).ready(function(){
     var barChart = null;
+    var ratingChart = null;
+    var doughnutChart = null;
+
     $('#value_ratings').addClass('hide_me');
-    //$('#submit').attr("disabled", "disabled");
-    //$('.dyno_address').addClass('hide_me');
-    // Get the locations for the dropdown
     get_location_states();
 
     // Get the addresses based on the state
     $('#state_selector').change(function(){
         var selected = $(this).val();
-        //get_locations(selected);
-        //$('#submit').removeAttr("disabled");
     });
 
     $('#submit').click(function(){
         var state = $('#state_selector').find('option:selected').val();
-        /*var element1 = $('#address_selector');
-        var element2 = $('#travel_style');
-        var location_id = element1.find('option:selected').attr("value");
-        var travel_style = element2.find('option:selected').attr("value");
-        //$('#address_selector').find('option').remove().end();
-        if (location_id && travel_style) {
-            get_location_data(location_id, travel_style);
-        }*/
         get_location_data(state)
     });
 
@@ -34,13 +24,19 @@ $(document).ready(function(){
         var location_id = $('#dashboard-locations').find('option:selected').attr('value')
         var location_address = $('#dashboard-locations').find('option:selected').text();
         if (barChart != null) {
-            //barChart.clear();
             barChart.destroy();
             $('canvas#ratings_chart').remove();
             $('div#bar_container').append('<canvas id="ratings_chart"></canvas>');
-            //barChart = null;
-            //$('#ratings_chart').remove();
-            //$('#bar_container').html('<canvas id="ratings_chart"></canvas>')
+        }
+        if (ratingChart != null) {
+            ratingChart.destroy();
+            $('canvas#travel_style_chart').remove();
+            $('div#travel_style_container').append('<canvas id="travel_style_container"></canvas>')
+        }
+        if (doughnutChart != null) {
+            doughnutChart.destroy();
+            $('canvas#donut_chart').remove();
+            $('div#donut_container').append('<canvas id="travel_style_container"></canvas>');
         }
         get_panel_metrics(location_id, location_address);
     });
@@ -235,7 +231,7 @@ var get_panel_metrics = function(location_id, location_address) {
                     get_score_comparison(total_possible,val,loc,sleep,room,clean,
                                         service,checkin,business);
                 }
-
+                get_travel_style_analysis(data);
             },
             error: function(error) {
             }
@@ -275,3 +271,97 @@ var get_score_comparison = function(total_possible,val,loc,sleep,room,clean,
     $('#highest_rating p').html(highest_val);
 
 };
+
+var get_travel_style_analysis = function(data) {
+    $.ajax({
+            url: '/get_travel_style_analysis',
+            data: data,
+            type: 'GET',
+            success: function(response) {
+                if (response.error) {
+                    alert(response.error);
+                }
+                else {
+
+                    var ts_chart = new Chart($('#travel_style_chart'), {
+                        type: 'bar',
+                        data: {
+                            labels: ["Couples", "Business", "Families", "Unknown",
+                                        "Solo", "Friends"],
+                            datasets: [
+                                {
+                                    label: "Ratings by Travel Style",
+                                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                                    data: [response.Couples, response.Business, response.Families,
+                                            response.Unknown, response.Solo, response.Friends]
+                                }
+                            ]
+                        },
+                        options: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Average Overall Rating by Travel Type'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Average Overall Rating'
+                                    },
+                                    ticks: {
+                                        beginAtZero: true,
+                                        max: 5
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                    ratingChart = ts_chart;
+                }
+                get_doughnut_chart(data);
+            },
+            error: function(error) {
+            }
+        });
+}
+
+var get_doughnut_chart = function(data){
+    $.ajax({
+            url: '/get_doughnut_chart',
+            data: data,
+            type: 'GET',
+            success: function(response) {
+                if (response.error) {
+                    alert(response.error);
+                }
+                else {
+                    var overall_score = response.overall;
+                    var dn_chart = new Chart($('#donut_chart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Negative Score', 'Neutral Score', 'Positive Score'],
+                            datasets: [
+                                {
+                                    label: "Sentiment Analysis",
+                                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9"],
+                                    data: [response.neg_score, response.neut_score,
+                                            response.pos_score]
+                                }
+                            ]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Sentiment Analysis Scores'
+                            }
+                        }
+                    });
+                    ratingChart = dn_chart;
+                }
+            },
+            error: function(error) {
+            }
+        });
+}

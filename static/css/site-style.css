@@ -133,4 +133,18 @@ main{
 .bar_graph {
     margin-top: 2em;
     background-color: #f2f2f2 !important;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bar_container {
+    text-align: center;
+}
+
+.middle_row{
+    margin-top: 2em;
+}
+
+#donut_container, #travel_style_container {
+    display: inline-block;
 }

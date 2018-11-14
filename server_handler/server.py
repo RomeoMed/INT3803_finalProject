@@ -132,21 +132,21 @@ class ServerHandler:
             rating_groups = _db.select_with_params(query1, [id_num])
             total_scores = _db.select_with_params(query2, [id_num])
 
-        return_obj['total_reviews'] = total_revs[0][0] or "Error"
+        return_obj['total_reviews'] = total_revs[0][0] or 0
         if rating_groups and total_scores:
             pos_total, neg_total = self._get_metrics(rating_groups)
 
             return_obj['pos_total'] = pos_total
             return_obj['neg_total'] = neg_total
-            return_obj['possible_score'] = total_scores[0][0]
-            return_obj['value'] = round(float(total_scores[0][1]), 2)
-            return_obj['location'] = round(float(total_scores[0][2]), 2)
-            return_obj['sleep'] = round(float(total_scores[0][3]), 2)
-            return_obj['room'] = round(float(total_scores[0][4]), 2)
-            return_obj['clean'] = round(float(total_scores[0][5]), 2)
-            return_obj['service'] = round(float(total_scores[0][6]), 2)
-            return_obj['checkin'] = round(float(total_scores[0][7]), 2)
-            return_obj['business'] = round(float(total_scores[0][8]), 2)
+            return_obj['possible_score'] = total_scores[0][0] or 0
+            return_obj['value'] = round(float(total_scores[0][1] or 0), 2)
+            return_obj['location'] = round(float(total_scores[0][2] or 0), 2)
+            return_obj['sleep'] = round(float(total_scores[0][3] or 0), 2)
+            return_obj['room'] = round(float(total_scores[0][4] or 0), 2)
+            return_obj['clean'] = round(float(total_scores[0][5] or 0), 2)
+            return_obj['service'] = round(float(total_scores[0][6] or 0), 2)
+            return_obj['checkin'] = round(float(total_scores[0][7] or 0), 2)
+            return_obj['business'] = round(float(total_scores[0][8] or 0), 2)
 
         return return_obj
 
@@ -155,11 +155,61 @@ class ServerHandler:
         total_neg = 0
 
         for item in data:
-            count = item[0]
-            rating = item[1]
+            count = item[0] or 0
+            rating = item[1] or 0
 
             if rating <= 3:
                 total_neg += count
             else:
                 total_pos += count
         return total_pos, total_neg
+
+    def get_travel_style_analysis(self, id_num: str):
+        self._logger.info('get_treval_style_analysis for id: {0}'.format(id_num))
+        query = """                 
+                    SELECT travel_type,
+                        SUM(rating) / COUNT(rating) AS avg_rating
+                    FROM tmp_rating_by_travel_type
+                    WHERE location_id = %s
+                    GROUP BY travel_type;
+                """
+
+        with self._db as _db:
+            result = _db.select_with_params(query, [id_num])
+
+        if result:
+            return_obj = {}
+            for res in result:
+                if res[0] == 'No filling in':
+                    travel_style = 'Unknown'
+                else:
+                    travel_style = res[0]
+                value = round(float(res[1] or 0), 2)
+
+                return_obj[travel_style] = value
+
+            return return_obj
+
+    def get_doughnut(self, loc_id: str):
+        self._logger.info('get_doughnut id: {0}'.format(loc_id))
+        query = """
+                    SELECT 
+                        avg_overall_score,
+                        avg_neg_score,
+                        avg_neut_score,
+                        avg_pos_score
+                    FROM avg_sentiment_analysis
+                    WHERE location_id = %s;
+                """
+
+        with self._db as _db:
+            result = _db.select_with_params(query, [loc_id])
+
+        if result:
+            return_obj = {
+                'neg_score': round(float(result[0][1] or 0), 2),
+                'neut_score': round(float(result[0][2] or 0), 2),
+                'pos_score': round(float(result[0][3] or 0), 2),
+                'overall': round(float(result[0][0] or 0), 2)
+            }
+            return return_obj
