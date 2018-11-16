@@ -2,6 +2,7 @@ $(document).ready(function(){
     var barChart = null;
     var ratingChart = null;
     var doughnutChart = null;
+    var slideIndex;
 
     $('#value_ratings').addClass('hide_me');
     get_location_states();
@@ -16,9 +17,7 @@ $(document).ready(function(){
         get_location_data(state)
     });
 
-    $('#dash').click(function(){
-        get_dashboard_select();
-    });
+    get_dashboard_select();
 
     $('#dashboard_button').click(function(){
         var location_id = $('#dashboard-locations').find('option:selected').attr('value')
@@ -39,6 +38,13 @@ $(document).ready(function(){
             $('div#donut_container').append('<canvas id="travel_style_container"></canvas>');
         }
         get_panel_metrics(location_id, location_address);
+    });
+
+    $('#review_button').click(function(){
+        var location_id = $('#review-locations').find('option:selected').attr('value')
+        var location_address = $('#review-locations').find('option:selected').text();
+        $('#location_span').text(location_address);
+        get_reviews(location_id);
     });
 });
 
@@ -67,36 +73,17 @@ var get_dashboard_select = function() {
             type: 'GET',
             success: function(response) {
                 var dropdown = $('#dashboard-locations');
+                var reviewDropdown = $('#review-locations')
                 $.each(response, function(i, val) {
                     var address = val;
                     var id = i;
                     dropdown.append($("<option></option>")
                                         .attr("value", id)
                                         .text(address));
-                });
-            },
-            error: function(error) {
-            }
-        });
-};
-
-var get_locations = function(state) {
-    var data = {'state' : state};
-    $('#address_selector').find('option').remove().end();
-    $.ajax({
-            url: '/get_locations_by_state',
-            data: data,
-            type: 'GET',
-            success: function(response) {
-                var dropdown = $('#address_selector');
-                $.each(response, function(i, val) {
-                    var address = val;
-                    var id = i;
-                    dropdown.append($("<option></option>")
+                    reviewDropdown.append($("<option></option>")
                                         .attr("value", id)
                                         .text(address));
                 });
-                $('.dyno_address').removeClass('hide_me');
             },
             error: function(error) {
             }
@@ -364,4 +351,45 @@ var get_doughnut_chart = function(data){
             error: function(error) {
             }
         });
+}
+
+var get_reviews = function(location_id) {
+    var data = {'id': location_id};
+    $.ajax({
+           url: '/get_reviews',
+           data: data,
+           type: 'GET',
+           success: function(response) {
+               var slideContainer = $('#siteDisplay');
+               $.each(response, function(i, val) {
+                   var review = val
+                   slideContainer.append($('<div class="reviewSlides"><p>'
+                                           + review + '</p></div>'));
+               });
+               slideIndex = 1;
+               showDivs(slideIndex);
+           },
+           error: function(error) {
+           }
+       });
+}
+var plusDivs = function(n) {
+    showDivs(slideIndex += n);
+};
+
+var showDivs = function(n) {
+    var i;
+    var x = $('.reviewSlides');
+    if (n > x.length) {
+        slideIndex = 1
+    }
+    if (n < 1) {
+        slideIndex = x.length
+    }
+
+    for (i = 0; i < x.length; i++) {
+        $(x[i]).addClass('displayNone');
+    }
+
+    $(x[slideIndex-1]).removeClass('displayNone');
 }

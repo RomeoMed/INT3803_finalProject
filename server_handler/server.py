@@ -1,7 +1,5 @@
-import json
 import logging
 from db import Database
-from lib import helpers
 
 
 class ServerHandler:
@@ -16,22 +14,6 @@ class ServerHandler:
             result = _db.select(query)
         return result
 
-    def get_locations(self, state: str):
-        self._logger.info("------>get_locations for %s" % state)
-        query = """SELECT location_id,
-                          CONCAT(address1, ' ', 
-                            address2, ' ',
-                            city, ' ', 
-                            state, ', ',
-                            zip
-                          )
-                    FROM hotel_location
-                    WHERE state = %s"""
-        with self._db as _db:
-            result = _db.select_with_params(query, [state])
-
-        if result:
-            return result
 
     def get_all_locations(self):
         self._logger.info("--------> get_all_locations")
@@ -212,4 +194,27 @@ class ServerHandler:
                 'pos_score': round(float(result[0][3] or 0), 2),
                 'overall': round(float(result[0][0] or 0), 2)
             }
+            return return_obj
+
+
+    def get_reviews(self, location_id: str):
+        self._logger.info('get_reviews for {0}'.format(location_id))
+        query = """
+                    SELECT 	
+                        tr.review_content AS content
+                    FROM trip_review tr
+                    JOIN trip_info ti
+                        ON ti.trip_id = tr.trip_id
+                    WHERE ti.location_id = %s
+                    LIMIT 10;
+                """
+        with self._db as _db:
+            result = _db.select_with_params(query, (location_id,))
+
+        if result:
+            index = 0
+            return_obj = {}
+            for res in result:
+                return_obj[index] = res[0]
+                index += 1
             return return_obj

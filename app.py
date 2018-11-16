@@ -26,7 +26,6 @@ request_handler = ServerHandler()
 @app.route("/")
 def index():
     _logger.info('Request for Home Page.')
-    # returns the main registration page.
     return render_template('index.html')
 
 
@@ -43,26 +42,11 @@ def get_states():
         flash('Something Went Terribly Wrong!')
         return render_template('error.html')
 
-@app.route('/get_locations_by_state', methods=['GET'])
-def get_locations():
-    _logger.info("/get_locations_by_state --processing")
-    state = request.args.get('state')
-    state_obj = {}
-    try:
-        result = request_handler.get_locations(state)
-        if result:
-            for res in result:
-                state_obj[res[0]] = res[1]
-            return jsonify(state_obj)
-    except Exception as e:
-        _logger.info('ERROR---------> %s' % e)
-
 
 @app.route('/get_locations_data', methods=['GET'])
 def get_locations_data():
     _logger.info('/get_locations_data --processing request')
     state = request.args.get('state')
-    response = []
     try:
         result = request_handler.get_location_data(state)
         if 'None Found' not in result:
@@ -90,9 +74,8 @@ def get_locations_data():
     except Exception as e:
         _logger.info('ERROR-------> %s' % e)
 
+
 @app.route('/get_dashboard_select', methods=['GET'])
-# Handler for the admin/reports page. Gets the data from the DB, and
-# returns it to a table in the html file.
 def getDashboardSelect():
     _logger.info('/getDashboardSelect --processing request')
     state_obj = {}
@@ -107,8 +90,6 @@ def getDashboardSelect():
 
 
 @app.route('/get_panel_data', methods=['GET'])
-# Handler for the admin/reports page. Gets the data from the DB, and
-# returns it to a table in the html file.
 def get_panel_data():
     location_id = request.args.get('id')
     _logger.info('/get_panel_data for: %s' % location_id)
@@ -143,6 +124,17 @@ def get_doughnut_char():
     except Exception as e:
         _logger.info('ERROR--------> %s' % e)
 
+
+@app.route('/get_reviews', methods=['GET'])
+def get_reviews():
+    location_id = request.args.get('id')
+    _logger.info('/get_reviews for: %s' % location_id)
+    try:
+        result = request_handler.get_reviews(location_id)
+        if result:
+            return jsonify(result)
+    except Exception as e:
+        _logger.info('ERROR--------> %s' % e)
 
 
 if __name__ == '__main__':

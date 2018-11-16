@@ -24,7 +24,7 @@
                         <a class="nav-link" data-toggle="tab" href="#dashboard" id="dash">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#menu2">Menu 2</a>
+                        <a class="nav-link" data-toggle="tab" href="#reviews">Read Reviews</a>
                     </li>
                 </ul>
             </nav>
@@ -148,7 +148,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane container fade" id="menu2">...</div>
+                    <div class="tab-pane container" id="reviews">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-sm-6">
+                                    <h4>Checkout Reviews</h4>
+                                    <hr/>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="col-sm-8 reviewSelect">
+                                    <label for="review-locations">Location: </label>
+                                    <select id="review-locations" name="review-locations">
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 reviewBtn">
+                                    <input type="button" id="review_button" value="Go">
+                                </div>
+                            </div>
+                            <div class="col-lg-12" id="review_container">
+                                <h6>Location: <span id="location_span"></span></h6>
+                                <div class="display_content" id="siteDisplay">
+                                    <button type="button" id="left" onclick="plusDivs(-1)">&#10094;</button>
+                                    <button type="button" id="right" onclick="plusDivs(1)">&#10095;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

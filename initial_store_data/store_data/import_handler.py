@@ -47,6 +47,7 @@ class DataHandler:
                                     v = self._sanitize_string(v)
                                 data_list.append(v)
                         if data_list:
+                            ## call the database insert_into_table method.
                             db.insert_into_table(self._table, data_list, self._columns)
                             total_records += 1
                     else:

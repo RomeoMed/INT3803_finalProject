@@ -111,7 +111,7 @@ main{
     margin-top: .8em;
 }
 
-.dashBtn, .dashSelect{
+.dashBtn, .dashSelect, .reviewSelect, .reviewBtn{
     display: inline;
 }
 
@@ -137,13 +137,57 @@ main{
     margin-right: auto;
 }
 
-.bar_container {
+.bar_container, #review_container {
     text-align: center;
 }
 
-.middle_row{
+.middle_row, #review_container{
     margin-top: 2em;
 }
+
+#review_container{
+
+}
+
+.display_content{
+    margin-top: 2em;
+    border: 1px solid #000;
+    width: 95%;
+    color: #000;
+    position: relative;
+}
+
+.reviewSlides{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.displayNone {
+    display: none;
+}
+
+#left, #right{
+    color: #fff!important;
+    background-color: rgba(0,0,0,0.4);
+}
+
+#left{
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(0%,-50%);
+}
+
+#right{
+    position: absolute;
+    top: 50%;
+    right: 0%;
+    transform: translate(0%,-50%);
+}
+
+
 
 #donut_container, #travel_style_container {
     display: inline-block;

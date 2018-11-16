@@ -102,7 +102,6 @@ class Database(object):
             query = query + tmp_query
         else:
             query = query + ' VALUES ('
-
         index = 0
         while index < len(data):
             if index != len(data) - 1:
