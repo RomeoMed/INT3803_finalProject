@@ -24,6 +24,7 @@ def retry_on_dberror(exception: Exception) -> bool:
 class _rollback(object):
     """ Mini class to ensure failed transactions are rolled back prior to a retry """
     _logger.info("ERROR-------->rolling back database")
+
     def __init__(self, conn):
         self.conn = conn
 
@@ -66,7 +67,7 @@ class Database(object):
         """ Property that lazily established, or reestablishes, a DB connection.
 
         Returns:
-            psycopg2.rxtensions.connection: the connection object
+            Database connection
         """
         if not self._conn or self._conn.closed:
             self.connect()

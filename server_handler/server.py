@@ -14,7 +14,6 @@ class ServerHandler:
             result = _db.select(query)
         return result
 
-
     def get_all_locations(self):
         self._logger.info("--------> get_all_locations")
         query = """SELECT location_id,
@@ -39,15 +38,9 @@ class ServerHandler:
                         CONCAT(l.address1, ', ',
                                 l.address2),
                         CONCAT(l.city, ' ', l.state, ', ', l.zip) AS CSZ,
-                        ts.total_reviews,
-                        ts.possible_score,
-                        ts.value,
-                        ts.location,
-                        ts.sleep,
-                        ts.room,
-                        ts.clean,
-                        ts.service,
-                        ts.checkin,
+                        ts.total_reviews, ts.possible_score, ts.value,
+                        ts.location, ts.sleep, ts.room,
+                        ts.clean, ts.service, ts.checkin,
                         ts.business
                   FROM total_rating_scores ts
                   JOIN hotel_location l

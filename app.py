@@ -1,7 +1,4 @@
-import re
-import datetime
 import logging
-from lib import helpers
 from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, flash, request, jsonify
 from server_handler.server import ServerHandler
@@ -33,8 +30,10 @@ def index():
 def get_states():
     _logger.info('/get_states request --processing data.')
     try:
+        # Get the states for the dropdown menu
         states = request_handler.get_states()
         if states:
+            # return as json object
             return jsonify(states)
 
     except Exception as e:
@@ -46,6 +45,7 @@ def get_states():
 @app.route('/get_locations_data', methods=['GET'])
 def get_locations_data():
     _logger.info('/get_locations_data --processing request')
+    # Get the request parameter
     state = request.args.get('state')
     try:
         result = request_handler.get_location_data(state)
@@ -58,6 +58,9 @@ def get_locations_data():
                     if k == 'address':
                         res[k] = v + ' ' + res['csz']
                     if k != 'address' and k != 'csz' and k != 'total_reviews' and k != 'possible_score':
+                        # Calculate the total score for each category, calculate the total possible
+                        # score based on reviews num or reviews * 5
+                        # calculate score percentage for each category.
                         total_score += v
                         max_score += possible_score
                         tmp = round((v / possible_score), 2) * 100
@@ -70,7 +73,7 @@ def get_locations_data():
                     res['overall'] = '--%'
             return jsonify(result)
         else:
-            return jsonify({'error' : 'No trips for selected location & travel_type'})
+            return jsonify({'error': 'No trips for selected location & travel_type'})
     except Exception as e:
         _logger.info('ERROR-------> %s' % e)
 
@@ -91,6 +94,7 @@ def getDashboardSelect():
 
 @app.route('/get_panel_data', methods=['GET'])
 def get_panel_data():
+    # get query parameters
     location_id = request.args.get('id')
     _logger.info('/get_panel_data for: %s' % location_id)
     try:
